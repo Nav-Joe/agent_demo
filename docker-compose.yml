@@ -1,0 +1,24 @@
+
+services:
+  home-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: home-ai-agent
+    ports:
+      - "${PORT:-7860}:7860"
+    env_file:
+      - .env
+    environment:
+      # 如果 Ollama 在宿主机，通过特殊 DNS 访问
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    volumes:
+      # 仅挂载 .env 方便修改，代码不挂载
+      - ./.env:/app/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7860/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

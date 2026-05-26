@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# 文档与临时文件
+*.md
+*.log
+*.png
+*.jpg
+
+# 环境（由运行时注入）
+.env
+.env.example
+
+# 其他
+.DS_Store
