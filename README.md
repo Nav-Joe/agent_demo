@@ -31,38 +31,25 @@
 ---
 
 ## 📁 项目结构
+```
 .
 ├── agents/                 # Agent 模块目录
-
 │   ├── cities.py          # 共享城市坐标与提取逻辑
-
 │   ├── llm.py             # Ollama LLM 工厂（统一 base_url / model）
-
 │   ├── router.py          # 意图识别路由 Agent
-
 │   ├── weather.py         # 天气查询 Agent（Tavily 搜索 + RAG）
-
 │   ├── outing.py          # 出行建议 Agent（多 Agent 协作）
-
 │   ├── suntime.py         # 日出日落 Agent（纯本地计算）
-
 │   └── proactive.py       # 主动对话 Agent（异步策略）
-
 ├── main.py                # Gradio 前端 + 主控调度
-
 ├── config.py              # 配置中心（Pydantic Settings）
-
 ├── logging_config.py      # 结构化日志初始化
-
 ├── Dockerfile             # Docker 多阶段构建
-
 ├── docker-compose.yml     # 一键编排启动
-
 ├── .env.example           # 环境变量模板
-
 ├── .gitignore             # Git 忽略规则（含 .env）
-
 └── requirements.txt       # Python 依赖
+```
 
 
 ---
