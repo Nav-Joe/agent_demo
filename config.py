@@ -1,15 +1,21 @@
-import os
-from dotenv import load_dotenv
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-class Config:
-    TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
-    if not TAVILY_API_KEY:
-        raise ValueError("TAVILY_API_KEY 未设置，请检查 .env 文件")
-    
-    OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-    PORT = int(os.getenv("PORT", "7860"))
-    GRADIO_SERVER_NAME = os.getenv("GRADIO_SERVER_NAME", "0.0.0.0")
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
-config = Config()
+    tavily_api_key: str
+    ollama_host: str = "http://localhost:11434"
+    ollama_model: str = "qwen2.5:3b"
+    port: int = 7860
+    gradio_server_name: str = "0.0.0.0"
+    proactive_silence_minutes: int = Field(default=3, ge=1, le=60)
+    log_level: str = "INFO"
+
+
+settings = Settings()

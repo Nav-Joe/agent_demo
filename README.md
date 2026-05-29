@@ -25,20 +25,24 @@
 - **搜索增强**：Tavily API（实时信息检索）
 - **前端**：Gradio 4.x
 - **容器化**：Docker + Docker Compose（多阶段构建）
-- **配置管理**：python-dotenv + 环境变量隔离
+- **配置管理**：Pydantic Settings + python-dotenv（类型校验、环境变量隔离）
+- **结构化日志**：标准 logging 模块，支持 `LOG_LEVEL` 配置
 
 ---
 
 ## 📁 项目结构
 .
 ├── agents/                 # Agent 模块目录
+│   ├── cities.py          # 共享城市坐标与提取逻辑
+│   ├── llm.py             # Ollama LLM 工厂（统一 base_url / model）
 │   ├── router.py          # 意图识别路由 Agent
 │   ├── weather.py         # 天气查询 Agent（Tavily 搜索 + RAG）
 │   ├── outing.py          # 出行建议 Agent（多 Agent 协作）
 │   ├── suntime.py         # 日出日落 Agent（纯本地计算）
 │   └── proactive.py       # 主动对话 Agent（异步策略）
 ├── main.py                # Gradio 前端 + 主控调度
-├── config.py              # 配置中心（环境变量统一管理）
+├── config.py              # 配置中心（Pydantic Settings）
+├── logging_config.py      # 结构化日志初始化
 ├── Dockerfile             # Docker 多阶段构建
 ├── docker-compose.yml     # 一键编排启动
 ├── .env.example           # 环境变量模板
@@ -114,6 +118,15 @@ ProactiveAgent 基于对话历史 + 沉默时长 + 时间敏感性，通过 ReAc
 ```
 ## 防幻觉机制
 天气 Agent 在 Tavily 搜索结果中强制验证城市名匹配，若搜索结果不含目标城市，直接拒绝回答，防止模型编造错误天气信息。
+
+## 近期优化
+- **Pydantic Settings**：集中管理配置，支持 `OLLAMA_MODEL`、`PROACTIVE_SILENCE_MINUTES`、`LOG_LEVEL` 等
+- **LLM 工厂**：统一 Ollama 连接（修复 `OLLAMA_HOST` 此前未生效的问题）
+- **共享城市数据**：`agents/cities.py` 消除各 Agent 重复的城市列表
+- **闲聊流式输出**：Gradio 前端对 chat 意图启用 token 级流式响应
+- **出行并行查询**：天气搜索与日出日落计算并发执行，降低响应延迟
+- **意图路由兜底**：非法意图自动回退到 chat，避免路由异常
+- **结构化日志**：关键路径（意图识别、搜索失败等）可观测
 
 ## 🔒 安全设计
 敏感信息隔离：API Key 全部通过 .env 环境变量注入，.env 已加入 .gitignore，永不入 Git
